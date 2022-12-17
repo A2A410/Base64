@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <title>File to Base64 Converter</title>
+  </head>
+  <body>
+    <input type="file" id="input" />
+    <button onclick="convert()">Convert</button>
+    <script>
+      function convert() {
+        // Get the file input element
+        const input = document.getElementById('input');
+
+        // Get the file object
+        const file = input.files[0];
+
+        // Read the file as a base64-encoded string
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          // Save the base64-encoded string to a text file
+          const a = document.createElement('a');
+          a.href = reader.result;
+          a.download = `${file.name}.txt`;
+          a.click();
+        };
+      }
+    </script>
+  </body>
+</html>

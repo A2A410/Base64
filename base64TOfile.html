@@ -1,0 +1,55 @@
+<html>
+  <head>
+    <title>Base64 to File Converter</title>
+  </head>
+  <body>
+    <input type="file" id="input" />
+    <input type="text" id="extension" placeholder="Enter extension (e.g. png, jpg, pdf)" />
+    <button onclick="convert()">Convert</button>
+    <script>
+      function convert() {
+        // Get the file input element
+        const input = document.getElementById('input');
+
+        // Get the file object
+        const file = input.files[0];
+
+        // Read the file as a text string
+        const reader = new FileReader();
+        reader.readAsText(file);
+        reader.onload = () => {
+          // Get the extension from the text field
+          const extension = document.getElementById('extension').value;
+
+          // Validate the extension
+          if (!extension.match(/^[a-zA-Z]+$/)) {
+            alert('Invalid extension');
+            return;
+          }
+
+          // Get the base64-encoded string from the text file
+          const base64 = reader.result;
+
+          // Convert the base64-encoded string to a Uint8Array
+          const binary = atob(base64.split(',')[1]);
+          const array = new Uint8Array(binary.length);
+          for (let i = 0; i < binary.length; i++) {
+            array[i] = binary.charCodeAt(i);
+          }
+
+          // Create a blob from the Uint8Array
+          const blob = new Blob([array], { type: `image/${extension}` });
+
+          // Create an object URL for the blob
+          const url = URL.createObjectURL(blob);
+
+          // Create an a element with the object URL as the href attribute and the name of the original file with the chosen extension as the download attribute
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `converted.${extension}`;
+          a.click();
+        };
+      }
+    </script>
+  </body>
+</html>
